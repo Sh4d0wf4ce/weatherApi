@@ -1,9 +1,12 @@
 const express = require('express');
 const sqlite = require("sqlite3").verbose();
+const cors = require("cors");
+
 const app = express();
 const port = 8080;
-
 const db = new sqlite.Database('weather.db');
+
+app.use(cors());
 
 app.get('/api/stacje', async (req, res) => {
     const query = "SELECT DISTINCT stacja FROM weather_data";
