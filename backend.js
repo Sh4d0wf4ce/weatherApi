@@ -8,6 +8,34 @@ const db = new sqlite.Database('weather.db');
 
 app.use(cors());
 
+app.get('/api/weather', async (req, res) => {
+    saveData();
+
+    const { station } = req.query;
+    
+    if (station) {
+      const query = `SELECT * FROM weather_data WHERE stacja = ?`;
+      db.all(query, [station], (error, rows) => {
+        if (error) {
+          console.error('Error retrieving weather data:', error);
+          res.status(500).json({ error: 'An error occurred while retrieving weather data' });
+        } else {
+          res.json(rows);
+        }
+      });
+    } else {
+      const query = `SELECT * FROM weather_data`;
+      db.all(query, (error, rows) => {
+        if (error) {
+          console.error('Error retrieving weather data:', error);
+          res.status(500).json({ error: 'An error occurred while retrieving weather data' });
+        } else {
+          res.json(rows);
+        }
+      });
+    }
+  });
+
 app.get('/api/stacje', async (req, res) => {
     const query = "SELECT DISTINCT stacja FROM weather_data";
     
@@ -16,14 +44,13 @@ app.get('/api/stacje', async (req, res) => {
             console.error('Error retrieving stations:', error);
             res.status(500).json({ error: 'An error occurred while retrieving stations' });
         } else {
-            console.log(rows);
             const stations = rows.map((row) => row.stacja);
             res.json(stations);
         }
     });
 });
 
-app.get('/api/weather', async (req, res) => {
+async function saveData(){
     const response = await fetch("https://danepubliczne.imgw.pl/api/data/synop");
     const weatherData = await response.json();
     const query  = `INSERT INTO weather_data (
@@ -57,9 +84,7 @@ app.get('/api/weather', async (req, res) => {
 
         db.run(query, values);
     }
-
-    res.json(weatherData);
-});
+}
 
 app.listen(port, () => {
     console.log(`Listening on port ${port}`);
