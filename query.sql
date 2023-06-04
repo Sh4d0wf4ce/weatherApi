@@ -1,0 +1,13 @@
+
+-- CREATE TABLE IF NOT EXISTS weather_data (
+--   id_stacji INTEGER,
+--   stacja TEXT,
+--   data_pomiaru DATE,
+--   godzina_pomiaru INTEGER,
+--   temperatura REAL,
+--   predkosc_wiatru REAL,
+--   kierunek_wiatru INTEGER,
+--   wilgotnosc_wzgledna REAL,
+--   suma_opadu REAL,
+--   cisnienie REAL
+-- );
